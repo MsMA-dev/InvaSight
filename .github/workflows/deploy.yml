@@ -17,7 +17,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.USERNAME_TEAM }}/invasight:latest .
+        run: docker build -t ${{ secrets.USERNAME_TEAM }}/invasight:latest 
 
       - name: Push Docker image
         run: docker push ${{ secrets.USERNAME_TEAM }}/invasight:latest
