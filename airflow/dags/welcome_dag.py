@@ -3,6 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
 from pipelines.market_data import (
+    check_api_availability,
     fetch_exchange_rates,
     fetch_metal_prices,
     fetch_daily_equity_prices,
@@ -20,6 +21,11 @@ with DAG(
     catchup=False
 ) as dag:
 
+    check_api_availability_task = PythonOperator(
+        task_id='check_api_availability',
+        python_callable=check_api_availability
+    )
+
     fetch_exchange_rates_task = PythonOperator(
         task_id='fetch_exchange_rates',
         python_callable=fetch_exchange_rates
@@ -35,8 +41,8 @@ with DAG(
         python_callable=fetch_daily_equity_prices
     )
 
-    # All tasks run in parallel (no dependencies between them)
-    [
+    # Fetch tasks run in parallel, but only after API availability is confirmed
+    check_api_availability_task >> [
         fetch_exchange_rates_task,
         fetch_metal_prices_task,
         fetch_daily_equity_prices_task

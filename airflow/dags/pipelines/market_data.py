@@ -8,6 +8,29 @@ from pipelines.s3_utils import upload_json_to_s3
 EXCHANGE_BASE_URL = "http://api.exchangeratesapi.io/v1/latest"
 TICKERS = ["AAPL", "MSFT", "SPY", "GLD"]
 BASE_URL = "https://www.alphavantage.co/query"
+METAL_BASE_URL = "https://api.metalpriceapi.com/v1/latest"
+
+API_ENDPOINTS = {
+    "exchange_rates": EXCHANGE_BASE_URL,
+    "metal_prices": METAL_BASE_URL,
+    "equity_prices": BASE_URL,
+}
+
+
+def check_api_availability(**kwargs):
+    """Fail fast if any upstream market data API is unreachable."""
+    unavailable = []
+
+    for name, url in API_ENDPOINTS.items():
+        try:
+            response = requests.get(url, timeout=10)
+            print(f"{name} ({url}) responded with status {response.status_code}")
+        except requests.exceptions.RequestException as exc:
+            print(f"{name} ({url}) is unavailable: {exc}")
+            unavailable.append(name)
+
+    if unavailable:
+        raise RuntimeError(f"Unavailable APIs: {', '.join(unavailable)}")
 
 
 def fetch_exchange_rates(**kwargs):
@@ -29,7 +52,6 @@ def fetch_exchange_rates(**kwargs):
 
 
 def fetch_metal_prices(**kwargs):
-    base_url = "https://api.metalpriceapi.com/v1/latest"
     metals = {"XAU": "Gold", "XAG": "Silver", "XPT": "Platinum", "XPD": "Palladium"}
     params = {
         "api_key": "113af9100ddadc638fa89a91e9a46663",
@@ -37,7 +59,7 @@ def fetch_metal_prices(**kwargs):
         "currencies": ",".join(metals.keys())
     }
 
-    response = requests.get(base_url, params=params)
+    response = requests.get(METAL_BASE_URL, params=params)
     response.raise_for_status()
     raw_data = response.json()
 
