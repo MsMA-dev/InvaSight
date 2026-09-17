@@ -1,0 +1,14 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: dockerfile
+    image: test:latest
+
+    volumes:
+      - ./airflow:/opt/airflow
+
+    ports:
+      - "30000:8080"
+    command: airflow standalone
+    restart: unless-stopped
