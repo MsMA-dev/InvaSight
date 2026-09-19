@@ -7,3 +7,9 @@ airflow/logs/
 airflow/data/
 **/__pycache__/
 *.pyc
+
+# dbt generated files
+dbt/**/target/
+dbt/**/logs/
+dbt/**/dbt_packages/
+dbt/**/.user.yml
