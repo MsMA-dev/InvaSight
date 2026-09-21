@@ -2,7 +2,7 @@ import time
 
 import requests
 
-from pipelines.s3_utils import upload_json_to_s3
+from pipelines.blob_utils import upload_json_to_blob
 
 
 EXCHANGE_BASE_URL = "http://api.exchangeratesapi.io/v1/latest"
@@ -33,6 +33,47 @@ def check_api_availability(**kwargs):
         raise RuntimeError(f"Unavailable APIs: {', '.join(unavailable)}")
 
 
+def validate_exchange_rates(data):
+    if not data.get("success"):
+        raise ValueError(f"Exchange rates API returned an error: {data}")
+
+    usd_rate = data.get("rates", {}).get("USD")
+    if not isinstance(usd_rate, (int, float)) or usd_rate <= 0:
+        raise ValueError(f"Missing or invalid USD rate: {data.get('rates')}")
+
+
+def validate_metal_prices(data, metals):
+    if not data.get("success"):
+        raise ValueError(f"Metal prices API returned an error: {data}")
+
+    rates = data.get("rates", {})
+    invalid = [
+        m for m in metals
+        if not isinstance(rates.get(m), (int, float)) or rates.get(m) <= 0
+    ]
+    if invalid:
+        raise ValueError(f"Missing or invalid metal rates for {invalid}: {rates}")
+
+
+def validate_equity_prices(raw_results, tickers):
+    missing = [t for t in tickers if t not in raw_results]
+    if missing:
+        raise ValueError(f"Missing tickers in equity response: {missing}")
+
+    for symbol, payload in raw_results.items():
+        series = payload.get("Time Series (Daily)")
+        if not series:
+            raise ValueError(f"No daily time series for {symbol}: {payload}")
+
+        for date, values in series.items():
+            missing_fields = [
+                f for f in ("1. open", "2. high", "3. low", "4. close", "5. volume")
+                if f not in values
+            ]
+            if missing_fields:
+                raise ValueError(f"Missing {missing_fields} for {symbol} on {date}")
+
+
 def fetch_exchange_rates(**kwargs):
     params = {
         "access_key": "9f4c589d5963842ccaf9e8d7db8aaad3",
@@ -45,10 +86,8 @@ def fetch_exchange_rates(**kwargs):
     raw_data = response.json()
     print("Exchange rates fetched successfully.")
 
-    if raw_data.get("success"):
-        upload_json_to_s3(raw_data, f"exchange_rates/{kwargs['ds']}.json")
-    else:
-        print(f"API Error: {raw_data}")
+    validate_exchange_rates(raw_data)
+    upload_json_to_blob(raw_data, f"exchange_rates/exchange_rates/{kwargs['ds']}.json")
 
 
 def fetch_metal_prices(**kwargs):
@@ -63,7 +102,8 @@ def fetch_metal_prices(**kwargs):
     response.raise_for_status()
     raw_data = response.json()
 
-    upload_json_to_s3(raw_data, f"metal_prices/{kwargs['ds']}.json")
+    validate_metal_prices(raw_data, metals.keys())
+    upload_json_to_blob(raw_data, f"metal_prices/metal_prices/{kwargs['ds']}.json")
 
 
 def fetch_daily_equity_prices(**kwargs):
@@ -86,6 +126,7 @@ def fetch_daily_equity_prices(**kwargs):
         time.sleep(15)
 
     if raw_results:
-        upload_json_to_s3(raw_results, f"equity_prices/{kwargs['ds']}.json")
+        validate_equity_prices(raw_results, TICKERS)
+        upload_json_to_blob(raw_results, f"equity_prices/equity_prices/{kwargs['ds']}.json")
     else:
         print("No data retrieved.")

@@ -2,7 +2,7 @@ import csv
 import os
 import random
 
-from pipelines.s3_utils import upload_file_to_s3
+from pipelines.blob_utils import upload_file_to_blob
 
 
 STAGING_DIR = "/opt/airflow/data/internal_ledger"
@@ -48,6 +48,44 @@ LEDGER_COLUMNS = [
 ]
 
 
+def validate_ledger(rows):
+    """Fail fast if the generated ledger is incomplete or internally inconsistent."""
+    if len(rows) != LEDGER_ROWS:
+        raise ValueError(f"Expected {LEDGER_ROWS} rows, got {len(rows)}")
+
+    for row in rows:
+        for col in LEDGER_COLUMNS:
+            if row.get(col) in (None, ""):
+                raise ValueError(f"Missing {col} in row {row.get('transaction_id')}")
+
+        if row["client_id"] not in CLIENT_IDS:
+            raise ValueError(f"Unknown client_id {row['client_id']} in row {row['transaction_id']}")
+        if row["portfolio_id"] not in PORTFOLIO_IDS:
+            raise ValueError(f"Unknown portfolio_id {row['portfolio_id']} in row {row['transaction_id']}")
+        if row["ticker"] not in TICKER_CURRENCY:
+            raise ValueError(f"Unknown ticker {row['ticker']} in row {row['transaction_id']}")
+        if row["currency"] != TICKER_CURRENCY[row["ticker"]]:
+            raise ValueError(f"Currency mismatch for ticker {row['ticker']} in row {row['transaction_id']}")
+        if row["transaction_type"] not in TRANSACTION_TYPES:
+            raise ValueError(f"Unknown transaction_type {row['transaction_type']} in row {row['transaction_id']}")
+        if row["quantity"] <= 0 or row["price"] <= 0 or row["fee_amount"] <= 0:
+            raise ValueError(f"Non-positive quantity/price/fee_amount in row {row['transaction_id']}")
+
+        gross_amount = row["quantity"] * row["price"]
+        if row["transaction_type"] == "BUY":
+            expected_total = gross_amount + row["fee_amount"]
+        else:
+            expected_total = -(gross_amount - row["fee_amount"])
+
+        if round(expected_total, 2) != row["total"]:
+            raise ValueError(
+                f"Total mismatch in row {row['transaction_id']}: "
+                f"expected {round(expected_total, 2)}, got {row['total']}"
+            )
+
+    print(f"Validated {len(rows)} rows.")
+
+
 def generate_internal_ledger(data_interval_start, ts_nodash, **_):
     """Synthetic internal ledger for one 45-minute interval.
 
@@ -90,6 +128,8 @@ def generate_internal_ledger(data_interval_start, ts_nodash, **_):
             "total": round(total, 2),
         })
 
+    validate_ledger(rows)
+
     os.makedirs(STAGING_DIR, exist_ok=True)
     output_path = f"{STAGING_DIR}/internal_ledger_{ts_nodash}.csv"
     with open(output_path, "w", newline="", encoding="utf-8") as f:
@@ -99,6 +139,6 @@ def generate_internal_ledger(data_interval_start, ts_nodash, **_):
 
     print(f"Created {len(rows)} transactions at {output_path}")
 
-    upload_file_to_s3(output_path, f"internal_ledger/{ts_nodash}.csv")
+    upload_file_to_blob(output_path, f"internal_ledger/internal_ledger/{ts_nodash}.csv")
 
     return output_path
