@@ -9,6 +9,6 @@ services:
       - ./airflow:/opt/airflow
 
     ports:
-      - "30000:8080"
+      - "30080:8080"
     command: airflow standalone
     restart: unless-stopped
