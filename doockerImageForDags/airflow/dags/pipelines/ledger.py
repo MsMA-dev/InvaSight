@@ -1,6 +1,7 @@
 import csv
 import os
 import random
+from datetime import datetime, timezone
 
 from pipelines.blob_utils import upload_file_to_blob
 
@@ -86,12 +87,18 @@ def validate_ledger(rows):
     print(f"Validated {len(rows)} rows.")
 
 
-def generate_internal_ledger(data_interval_start, ts_nodash, **_):
+def generate_internal_ledger(**kwargs):
     """Synthetic internal ledger for one 45-minute interval.
 
     Seeded from the interval start so a given run is reproducible on
     retry or backfill, while each interval produces different rows.
+    Falls back to the current time when triggered manually without a
+    logical date, since data_interval_start/ts_nodash are then absent
+    from the context.
     """
+    data_interval_start = kwargs.get("data_interval_start") or datetime.now(timezone.utc)
+    ts_nodash = kwargs.get("ts_nodash") or data_interval_start.strftime("%Y%m%dT%H%M%S")
+
     rng = random.Random(ts_nodash)
 
     transaction_ts = data_interval_start.isoformat()
