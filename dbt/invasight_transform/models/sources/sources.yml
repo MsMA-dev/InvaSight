@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: raw
+    database: INVASIGHT
+    schema: RAW
+    description: Raw source tables loaded into Snowflake from Azure ADLS.
+
+    tables:
+      - name: metal_prices_raw
+        identifier: METAL_PRICES_RAW
+        description: Raw Precious Metals API responses stored as JSON VARIANT with file metadata.
