@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: stg_precious_metals
+    description: >
+      Cleaned and deduplicated precious metals data parsed from the RAW JSON source.
+
+    columns:
+      - name: success
+        description: Indicates whether the source API request was successful.
+        tests:
+          - not_null
+
+      - name: base_currency
+        description: Base currency returned by the API.
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['USD']
+
+      - name: api_timestamp
+        description: Timestamp returned by the source API.
+        tests:
+          - not_null
+          - unique
+
+      - name: gold_usd
+        description: Gold rate returned by the API.
+        tests:
+          - not_null
+
+      - name: silver_usd
+        description: Silver rate returned by the API.
+        tests:
+          - not_null
+
+      - name: platinum_usd
+        description: Platinum rate returned by the API.
+        tests:
+          - not_null
+
+      - name: palladium_usd
+        description: Palladium rate returned by the API.
+        tests:
+          - not_null
+
+      - name: file_name
+        description: Source JSON file path in Azure ADLS.
+        tests:
+          - not_null
+
+      - name: loaded_at
+        description: Timestamp when the RAW record was loaded into Snowflake.
+        tests:
+          - not_null
