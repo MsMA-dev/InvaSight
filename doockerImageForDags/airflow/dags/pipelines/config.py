@@ -1,5 +1,3 @@
-SNOWFLAKE_CONN = "snowflake_default"
-
 DBT_SSH_CONN = "dbt_ec2_ssh"
 DBT_POOL = "dbt_ssh_pool"
 

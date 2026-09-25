@@ -10,7 +10,5 @@ USER airflow
 
 RUN pip install --no-cache-dir \
     apache-airflow-providers-microsoft-azure \
-    apache-airflow-providers-ssh \
-    apache-airflow-providers-common-sql \
-    apache-airflow-providers-snowflake
+    apache-airflow-providers-ssh
 
