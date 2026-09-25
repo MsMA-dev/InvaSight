@@ -79,6 +79,20 @@ def validate_equity_prices(raw_results, tickers):
                 raise ValueError(f"Missing {missing_fields} for {symbol} on {date}")
 
 
+def rebase_to_usd(data):
+    """This API's plan only returns EUR-based rates; triangulate through
+    EUR->USD to express every rate as if USD were the base instead, so
+    output is consistent with the other USD-based sources.
+    """
+    eur_rates = data["rates"]
+    usd_rate = eur_rates["USD"]
+    return {
+        **data,
+        "base": "USD",
+        "rates": {symbol: round(rate / usd_rate, 6) for symbol, rate in eur_rates.items()},
+    }
+
+
 def fetch_exchange_rates(**kwargs):
     params = {
         "access_key": "9f4c589d5963842ccaf9e8d7db8aaad3",
@@ -92,7 +106,8 @@ def fetch_exchange_rates(**kwargs):
     print("Exchange rates fetched successfully.")
 
     validate_exchange_rates(raw_data, EXCHANGE_SYMBOLS)
-    upload_json_to_blob(raw_data, f"exchange_rates/exchange_rates/{kwargs['ds']}.json")
+    usd_based = rebase_to_usd(raw_data)
+    upload_json_to_blob(usd_based, f"exchange_rates/exchange_rates/{kwargs['ds']}.json")
 
 
 def fetch_metal_prices(**kwargs):
