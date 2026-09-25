@@ -23,7 +23,7 @@ Airflow's job stops at landing data in Blob and then kicking off the matching db
 | Source | Provider | Notes / why |
 |---|---|---|
 | Internal ledger | generated in-house | No real ledger data available, so a synthetic 50,000-row ledger is generated per run, seeded from the run's timestamp so it's reproducible on retry. |
-| Exchange rates | exchangeratesapi.io | Free-tier plan rejects a custom `base` currency (`base_currency_access_restricted`) and only returns EUR-based rates, so the pipeline re-derives USD-based rates itself (triangulating through the EUR→USD rate) after fetching, to stay consistent with the other USD-based sources. |
+| Exchange rates | exchangeratesapi.io | Using the free tier, since this is a no-budget project and the free plan covers everything needed except one thing: it rejects a custom `base` currency (`base_currency_access_restricted`) and only ever returns EUR-based rates — a paid plan would lift that restriction. Rather than pay for it, the pipeline re-derives USD-based rates itself (triangulating through the EUR→USD rate) after fetching, to stay consistent with the other USD-based sources. |
 | Metal prices | metalpriceapi.com | This API's plan does honor `base=USD` directly, so no conversion needed. Covers gold, silver, platinum, palladium (XAU/XAG/XPT/XPD). |
 | Equity prices | Alpha Vantage (`TIME_SERIES_DAILY`) | Only supports US-listed tickers/ADRs — confirmed by testing that Tadawul (`.SR`) and Swiss (`.SW`) listings aren't supported at all on this endpoint. Tickers are US-listed companies/ETFs (AAPL, MSFT, SPY, GLD, GOOGL, IBM) plus the NYSE/NASDAQ ADR listings for Vodafone (`VOD`) and SAP (`SAP`) — both confirmed USD-denominated, not their home-exchange currencies. |
 
