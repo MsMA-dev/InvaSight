@@ -54,4 +54,8 @@ doockerImageForDags/        Airflow (Dockerfile, docker-compose, DAGs, pipeline 
     pipelines/               fetch/generate + validation logic per source
     *.py                     the two DAGs
 dbt/invasight_transform/    dbt project (staging/intermediate/marts models)
+environment_setup/dbt/      docs for how dbt was installed/configured on the EC2 worker
+SNOWFLAKE/                  placeholder folders mirroring the Snowflake schema layout
+data_source/raw/            early local sample data snapshots (pre-Blob-storage)
+.github/workflows/          CI/CD
 ```
