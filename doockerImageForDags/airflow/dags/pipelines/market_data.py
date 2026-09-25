@@ -6,7 +6,8 @@ from pipelines.blob_utils import upload_json_to_blob
 
 
 EXCHANGE_BASE_URL = "http://api.exchangeratesapi.io/v1/latest"
-TICKERS = ["AAPL", "MSFT", "SPY", "GLD"]
+EXCHANGE_SYMBOLS = ["USD", "SAR", "GBP", "CHF"]
+TICKERS = ["AAPL", "MSFT", "SPY", "GLD", "GOOGL", "IBM", "SAP", "VOD"]
 BASE_URL = "https://www.alphavantage.co/query"
 METAL_BASE_URL = "https://api.metalpriceapi.com/v1/latest"
 
@@ -33,13 +34,17 @@ def check_api_availability(**kwargs):
         raise RuntimeError(f"Unavailable APIs: {', '.join(unavailable)}")
 
 
-def validate_exchange_rates(data):
+def validate_exchange_rates(data, symbols):
     if not data.get("success"):
         raise ValueError(f"Exchange rates API returned an error: {data}")
 
-    usd_rate = data.get("rates", {}).get("USD")
-    if not isinstance(usd_rate, (int, float)) or usd_rate <= 0:
-        raise ValueError(f"Missing or invalid USD rate: {data.get('rates')}")
+    rates = data.get("rates", {})
+    invalid = [
+        s for s in symbols
+        if not isinstance(rates.get(s), (int, float)) or rates.get(s) <= 0
+    ]
+    if invalid:
+        raise ValueError(f"Missing or invalid exchange rates for {invalid}: {rates}")
 
 
 def validate_metal_prices(data, metals):
@@ -77,7 +82,7 @@ def validate_equity_prices(raw_results, tickers):
 def fetch_exchange_rates(**kwargs):
     params = {
         "access_key": "9f4c589d5963842ccaf9e8d7db8aaad3",
-        "symbols": "USD"
+        "symbols": ",".join(EXCHANGE_SYMBOLS)
     }
 
     response = requests.get(EXCHANGE_BASE_URL, params=params)
@@ -86,7 +91,7 @@ def fetch_exchange_rates(**kwargs):
     raw_data = response.json()
     print("Exchange rates fetched successfully.")
 
-    validate_exchange_rates(raw_data)
+    validate_exchange_rates(raw_data, EXCHANGE_SYMBOLS)
     upload_json_to_blob(raw_data, f"exchange_rates/exchange_rates/{kwargs['ds']}.json")
 
 

@@ -18,12 +18,10 @@ CLIENT_IDS = [f"C{i:03d}" for i in range(1, 21)]
 PORTFOLIO_IDS = [f"P{i:03d}" for i in range(1, 11)]
 
 TICKER_CURRENCY = {
-    "VOD": "GBP",
-    "2222.SR": "SAR",
-    "SAP": "EUR",
+    "VOD": "USD",
+    "SAP": "USD",
     "IBM": "USD",
     "XAU": "USD",
-    "NESN.SW": "CHF",
     "XAG": "USD",
     "XPT": "USD",
     "GOOGL": "USD",
