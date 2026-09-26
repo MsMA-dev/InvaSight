@@ -3,7 +3,7 @@
 A data pipeline that pulls market and internal transaction data, lands it in Azure Blob Storage, loads it into Snowflake, and transforms it with dbt — orchestrated end-to-end by Airflow.
 
 ## Items
-[Source Inventory and selection reasoning](data sources)
+[Source Inventory and selection reasoning](# data sources)
 
 
 
