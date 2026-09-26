@@ -4,6 +4,7 @@ A data pipeline that pulls market and internal transaction data, lands it in Azu
 
 ## Items
 [Source Inventory and selection reasoning](#data-sources)
+[Extraction scripts](https://github.com/MsMA-dev/InvaSight/blob/main/doockerImageForDags/airflow/dags/pipelines/ledger.py)
 
 
 
