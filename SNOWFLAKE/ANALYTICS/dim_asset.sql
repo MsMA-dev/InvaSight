@@ -1,0 +1,10 @@
+{{ config(materialized='table') }}
+
+SELECT
+    ASSET_KEY,
+    TICKER,
+    ASSET_NAME,
+    ASSET_TYPE,
+    SECTOR,
+    CURRENCY_CODE
+FROM INVASIGHT.ANALYTICS.DIM_ASSET

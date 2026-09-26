@@ -1,0 +1,7 @@
+{{ config(materialized='table') }}
+
+SELECT
+    SOURCE_KEY,
+    SOURCE_NAME,
+    SOURCE_TYPE
+FROM INVASIGHT.ANALYTICS.DIM_SOURCE

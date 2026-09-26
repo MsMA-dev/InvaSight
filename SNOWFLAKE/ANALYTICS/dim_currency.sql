@@ -1,0 +1,7 @@
+{{ config(materialized='table') }}
+
+SELECT
+    CURRENCY_KEY,
+    CURRENCY_CODE,
+    CURRENCY_NAME
+FROM INVASIGHT.ANALYTICS.DIM_CURRENCY

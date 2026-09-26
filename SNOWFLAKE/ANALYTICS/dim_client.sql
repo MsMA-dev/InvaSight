@@ -1,0 +1,7 @@
+{{ config(materialized='table') }}
+
+SELECT
+    CLIENT_KEY,
+    CLIENT_ID,
+    CLIENT_NAME
+FROM INVASIGHT.ANALYTICS.DIM_CLIENT
