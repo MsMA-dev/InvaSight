@@ -13,10 +13,10 @@ A data pipeline that pulls market and internal transaction data, lands it in Azu
 
 [dbt project (tests, docs)](dbt/invasight_transform/tests)
 
-[dbt project (docs)](grain)
+[dbt project (docs)]()
 
 
-[grain]
+[grain](#grain)
 ## Architecture
 
 ```
