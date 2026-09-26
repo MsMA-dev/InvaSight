@@ -17,6 +17,10 @@ A data pipeline that pulls market and internal transaction data, lands it in Azu
 
 
 [grain](#grain)
+
+[schema](schema.pdf)
+
+
 ## Architecture
 
 ```
