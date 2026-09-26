@@ -13,8 +13,10 @@ A data pipeline that pulls market and internal transaction data, lands it in Azu
 
 [dbt project (tests, docs)](dbt/invasight_transform/tests)
 
-[dbt project (docs)]()
+[dbt project (docs)](grain)
 
+
+[grain]
 ## Architecture
 
 ```
@@ -41,6 +43,18 @@ Airflow's job stops at landing data in Blob and then kicking off the matching db
 | Equity prices | Alpha Vantage (`TIME_SERIES_DAILY`) | Only supports US-listed tickers/ADRs — confirmed by testing that Tadawul (`.SR`) and Swiss (`.SW`) listings aren't supported at all on this endpoint. Tickers are US-listed companies/ETFs (AAPL, MSFT, SPY, GLD, GOOGL, IBM) plus the NYSE/NASDAQ ADR listings for Vodafone (`VOD`) and SAP (`SAP`) — both confirmed USD-denominated, not their home-exchange currencies. |
 
 Every fetch validates its own data (all fields present, values positive/well-formed, expected symbols/tickers present) before uploading — failing fast rather than uploading partial or malformed data.
+
+
+# Grain
+
+ FACT_HOLDINGS: one row per transaction. Each row represents a single BUY or SELL transaction by a client for an asset, in one currency, on one date. A client can have multiple transactions for the same asset on the same day. Current positions are derived by netting BUY and SELL quantities.
+
+FACT_MARKET_PRICES: one row per asset, date, and source. Each row represents the closing market price reported by a source for an asset on a specific date, together with the exchange rate and SAR-converted price.
+
+FACT_DAILY_PORTFOLIO_SUMMARY: one row per client and date. Each row represents a client’s daily portfolio summary, including investment, portfolio value, fees, return, P&L, and currency exposure in SAR.
+
+Dimension tables: one row per business entity: DIM_DATE (one per calendar date), DIM_ASSET (one per asset), DIM_CLIENT (one per client), DIM_CURRENCY (one per currency), and DIM_SOURCE (one per data source). Fact tables reference these dimensions through their respective keys.
+
 
 ## Storage — Azure Blob Storage
 
