@@ -10,11 +10,13 @@ STAGING_DIR = "/opt/airflow/data/internal_ledger"
 LEDGER_ROWS = 50000
 
 CLIENT_NAMES = [
-    "Khalid", "Saad", "Sara", "Omar", "Huda", "Aisha",
-    "Faisal", "Maha", "Rana", "Amal", "Reem",
+    "Khalid", "Saad", "Sara", "Omar", "Huda", "Aisha", "Faisal",
+    "Maha", "Rana", "Amal", "Reem", "Abdullah", "Fahad", "Lama",
+    "Yousef", "Noura", "Turki", "Dana", "Majed", "Hind",
 ]
 
-CLIENT_IDS = [f"C{i:03d}" for i in range(1, 21)]
+CLIENTS = {f"C{i:03d}": name for i, name in enumerate(CLIENT_NAMES, start=1)}
+CLIENT_IDS = list(CLIENTS)
 PORTFOLIO_IDS = [f"P{i:03d}" for i in range(1, 11)]
 
 TICKER_CURRENCY = {
@@ -59,6 +61,11 @@ def validate_ledger(rows):
 
         if row["client_id"] not in CLIENT_IDS:
             raise ValueError(f"Unknown client_id {row['client_id']} in row {row['transaction_id']}")
+        if row["client_name"] != CLIENTS[row["client_id"]]:
+            raise ValueError(
+                f"client_name {row['client_name']} does not match client_id {row['client_id']} "
+                f"in row {row['transaction_id']}"
+            )
         if row["portfolio_id"] not in PORTFOLIO_IDS:
             raise ValueError(f"Unknown portfolio_id {row['portfolio_id']} in row {row['transaction_id']}")
         if row["ticker"] not in TICKER_CURRENCY:
@@ -117,10 +124,12 @@ def generate_internal_ledger(**kwargs):
         else:
             total = -(gross_amount - fee_amount)
 
+        client_id = rng.choice(CLIENT_IDS)
+
         rows.append({
             "transaction_id": f"T{ts_nodash}{i:05d}",
-            "client_id": rng.choice(CLIENT_IDS),
-            "client_name": rng.choice(CLIENT_NAMES),
+            "client_id": client_id,
+            "client_name": CLIENTS[client_id],
             "portfolio_id": rng.choice(PORTFOLIO_IDS),
             "ticker": ticker,
             "transaction_type": transaction_type,
