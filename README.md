@@ -45,7 +45,7 @@ Airflow's job stops at landing data in Blob and then kicking off the matching db
 Every fetch validates its own data (all fields present, values positive/well-formed, expected symbols/tickers present) before uploading — failing fast rather than uploading partial or malformed data.
 
 
-# Grain
+## Grain
 
  FACT_HOLDINGS: one row per transaction. Each row represents a single BUY or SELL transaction by a client for an asset, in one currency, on one date. A client can have multiple transactions for the same asset on the same day. Current positions are derived by netting BUY and SELL quantities.
 
