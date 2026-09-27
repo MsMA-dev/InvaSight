@@ -7,6 +7,11 @@ DBT_POOL = "dbt_ssh_pool"
 DBT_ENV_SCRIPT = "/home/ubuntu/invasight_pipeline/dev_env.sh"
 
 
+# clean + deps on every run: teammates work in the same project folder and
+# dbt_packages/ keeps getting wiped, which fails the build with exit status 2.
 def dbt_build_cmd(*select_args):
     select = " ".join(select_args)
-    return f". {DBT_ENV_SCRIPT} && dbt build --select {select}"
+    return (
+        f". {DBT_ENV_SCRIPT} && dbt clean && dbt deps"
+        f" && dbt build --full-refresh --select {select}"
+    )
