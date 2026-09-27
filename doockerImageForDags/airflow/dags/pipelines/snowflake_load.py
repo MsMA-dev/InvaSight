@@ -1,4 +1,4 @@
-SNOWFLAKE_CONN = "snowflake_invasight"
+SNOWFLAKE_CONN = "snowflake_default"
 
 # Points at the container root, so FILES takes the full blob path as uploaded
 STAGE = "@INVASIGHT.RAW.INVASIGHT_AZURE_SAS_STAGE"
