@@ -1,8 +1,8 @@
-name: 'invasight_transform'
+name: 'invasight_pipeline'
 version: '1.0.0'
 config-version: 2
 
-profile: 'invasight_transform'
+profile: 'invasight_pipeline'
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -16,12 +16,10 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  invasight_transform:
+  invasight_pipeline:
     staging:
       +materialized: view
-
-    intermediate:
-      +materialized: ephemeral
-
-    marts:
+      +schema: STAGING
+    analytics:
       +materialized: table
+      +schema: ANALYTICS
