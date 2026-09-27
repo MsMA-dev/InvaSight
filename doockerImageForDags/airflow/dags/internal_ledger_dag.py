@@ -28,7 +28,7 @@ with DAG(
         task_id="dbt_build",
         ssh_conn_id=DBT_SSH_CONN,
         cmd_timeout=3600,  # default is 10s, which would kill dbt mid-run
-        command=dbt_build_cmd("source:ledger.internal_ledger+"),
+        command=dbt_build_cmd("source:raw.ledger_transactions_raw+"),
         pool=DBT_POOL,
     )
 

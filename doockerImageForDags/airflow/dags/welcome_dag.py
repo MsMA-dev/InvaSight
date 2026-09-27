@@ -47,9 +47,9 @@ with DAG(
         ssh_conn_id=DBT_SSH_CONN,
         cmd_timeout=3600,  # default is 10s, which would kill dbt mid-run
         command=dbt_build_cmd(
-            "source:market_data.exchange_rates+",
-            "source:market_data.metal_prices+",
-            "source:market_data.equity_prices+",
+            "source:raw.fx_rates_raw+",
+            "source:raw.metal_prices_raw+",
+            "source:raw.equity_prices_raw+",
         ),
         pool=DBT_POOL,
     )
