@@ -15,6 +15,7 @@ def upload_json_to_blob(data, blob_name):
         overwrite=True,
     )
     print(f"Uploaded to blob {CONTAINER_NAME}/{blob_name}")
+    return blob_name
 
 
 def upload_file_to_blob(file_path, blob_name):
@@ -25,3 +26,4 @@ def upload_file_to_blob(file_path, blob_name):
         overwrite=True,
     )
     print(f"Uploaded to blob {CONTAINER_NAME}/{blob_name}")
+    return blob_name

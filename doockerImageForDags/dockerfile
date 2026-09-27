@@ -8,7 +8,10 @@ RUN apt-get update && \
 
 USER airflow
 
+# Pin airflow itself so installing providers can't pull in a different version
 RUN pip install --no-cache-dir \
+    apache-airflow==3.3.2 \
     apache-airflow-providers-microsoft-azure \
-    apache-airflow-providers-ssh
+    apache-airflow-providers-ssh \
+    apache-airflow-providers-snowflake
 

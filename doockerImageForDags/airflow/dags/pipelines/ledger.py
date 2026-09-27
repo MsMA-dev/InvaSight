@@ -153,6 +153,5 @@ def generate_internal_ledger(**kwargs):
 
     print(f"Created {len(rows)} transactions at {output_path}")
 
-    upload_file_to_blob(output_path, f"internal_ledger/internal_ledger/{ts_nodash}.csv")
-
-    return output_path
+    # Returned blob path is pulled by the load task, so it loads exactly this file
+    return upload_file_to_blob(output_path, f"internal_ledger/internal_ledger/{ts_nodash}.csv")

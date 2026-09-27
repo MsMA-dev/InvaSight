@@ -107,7 +107,7 @@ def fetch_exchange_rates(**kwargs):
 
     validate_exchange_rates(raw_data, EXCHANGE_SYMBOLS)
     usd_based = rebase_to_usd(raw_data)
-    upload_json_to_blob(usd_based, f"exchange_rates/exchange_rates/{kwargs['ds']}.json")
+    return upload_json_to_blob(usd_based, f"exchange_rates/exchange_rates/{kwargs['ds']}.json")
 
 
 def fetch_metal_prices(**kwargs):
@@ -123,7 +123,7 @@ def fetch_metal_prices(**kwargs):
     raw_data = response.json()
 
     validate_metal_prices(raw_data, metals.keys())
-    upload_json_to_blob(raw_data, f"metal_prices/metal_prices/{kwargs['ds']}.json")
+    return upload_json_to_blob(raw_data, f"metal_prices/metal_prices/{kwargs['ds']}.json")
 
 
 def fetch_daily_equity_prices(**kwargs):
@@ -147,6 +147,6 @@ def fetch_daily_equity_prices(**kwargs):
 
     if raw_results:
         validate_equity_prices(raw_results, TICKERS)
-        upload_json_to_blob(raw_results, f"equity_prices/equity_prices/{kwargs['ds']}.json")
+        return upload_json_to_blob(raw_results, f"equity_prices/equity_prices/{kwargs['ds']}.json")
     else:
         print("No data retrieved.")

@@ -1,6 +1,7 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.ssh.operators.ssh import SSHOperator
+from airflow.providers.standard.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
 from pipelines.market_data import (
@@ -10,6 +11,13 @@ from pipelines.market_data import (
     fetch_daily_equity_prices,
 )
 from pipelines.config import DBT_SSH_CONN, DBT_POOL, dbt_build_cmd
+from pipelines.snowflake_load import (
+    SNOWFLAKE_CONN,
+    RAW_FX,
+    RAW_METALS,
+    RAW_EQUITY,
+    copy_json_sql,
+)
 
 
 with DAG(
@@ -42,6 +50,25 @@ with DAG(
         python_callable=fetch_daily_equity_prices,
     )
 
+    load_exchange_rates = SQLExecuteQueryOperator(
+        task_id="load_exchange_rates",
+        conn_id=SNOWFLAKE_CONN,
+        sql=copy_json_sql(RAW_FX, "fetch_exchange_rates"),
+        show_return_value_in_logs=True,
+    )
+    load_metal_prices = SQLExecuteQueryOperator(
+        task_id="load_metal_prices",
+        conn_id=SNOWFLAKE_CONN,
+        sql=copy_json_sql(RAW_METALS, "fetch_metal_prices"),
+        show_return_value_in_logs=True,
+    )
+    load_equity_prices = SQLExecuteQueryOperator(
+        task_id="load_equity_prices",
+        conn_id=SNOWFLAKE_CONN,
+        sql=copy_json_sql(RAW_EQUITY, "fetch_daily_equity_prices"),
+        show_return_value_in_logs=True,
+    )
+
     dbt_build = SSHOperator(
         task_id="dbt_build",
         ssh_conn_id=DBT_SSH_CONN,
@@ -60,8 +87,8 @@ with DAG(
         fetch_daily_equity_prices_task,
     ]
 
-    [
-        fetch_exchange_rates_task,
-        fetch_metal_prices_task,
-        fetch_daily_equity_prices_task,
-    ] >> dbt_build
+    fetch_exchange_rates_task >> load_exchange_rates
+    fetch_metal_prices_task >> load_metal_prices
+    fetch_daily_equity_prices_task >> load_equity_prices
+
+    [load_exchange_rates, load_metal_prices, load_equity_prices] >> dbt_build

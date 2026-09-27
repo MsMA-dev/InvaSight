@@ -1,10 +1,12 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.ssh.operators.ssh import SSHOperator
+from airflow.providers.standard.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
 from pipelines.ledger import generate_internal_ledger
 from pipelines.config import DBT_SSH_CONN, DBT_POOL, dbt_build_cmd
+from pipelines.snowflake_load import SNOWFLAKE_CONN, copy_ledger_sql
 
 
 with DAG(
@@ -24,6 +26,13 @@ with DAG(
         python_callable=generate_internal_ledger,
     )
 
+    load_ledger = SQLExecuteQueryOperator(
+        task_id="load_ledger",
+        conn_id=SNOWFLAKE_CONN,
+        sql=copy_ledger_sql("generate_internal_ledger"),
+        show_return_value_in_logs=True,
+    )
+
     dbt_build = SSHOperator(
         task_id="dbt_build",
         ssh_conn_id=DBT_SSH_CONN,
@@ -32,4 +41,4 @@ with DAG(
         pool=DBT_POOL,
     )
 
-    generate_internal_ledger_task >> dbt_build
+    generate_internal_ledger_task >> load_ledger >> dbt_build
