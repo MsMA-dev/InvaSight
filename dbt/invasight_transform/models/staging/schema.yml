@@ -14,6 +14,14 @@ sources:
         identifier: EQUITY_PRICES_RAW
         description: Raw equity price API responses (Alpha Vantage) loaded from Azure ADLS into Snowflake.
 
+      - name: fx_rates_raw
+        identifier: FX_RATES_RAW
+        description: Raw exchange rates API responses loaded into Snowflake.
+
+      - name: ledger_transactions_raw
+        identifier: LEDGER_TRANSACTIONS_RAW
+        description: Raw investment ledger transaction records loaded into Snowflake.
+
 models:
   - name: stg_precious_metals
     description: >
@@ -124,3 +132,11 @@ models:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns: [ticker, date]
+
+  - name: stg_exchange_rates
+    description: >
+      Parsed and deduplicated foreign exchange rates.
+
+  - name: stg_ledger_transactions
+    description: >
+      Parsed and cleaned raw ledger transactions.
