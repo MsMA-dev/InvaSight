@@ -1,11 +1,16 @@
 import json
 import time
+from functools import lru_cache
+
 import boto3
 from botocore.exceptions import ClientError
 import requests
 
 from pipelines.blob_utils import upload_json_to_blob
 
+# Fetched on first use by a task, not at import: a module-level call would hit
+# Secrets Manager on every DAG parse and drop the DAG if AWS is unreachable.
+@lru_cache(maxsize=1)
 def get_secrets():
     secret_name = "APIs-credentials"
     region_name = "eu-north-1"
@@ -21,8 +26,6 @@ def get_secrets():
         raise RuntimeError(f"Failed to retrieve secrets from AWS: {e}")
 
     return json.loads(response["SecretString"])
-
-SECRETS = get_secrets()
 
 EXCHANGE_BASE_URL = "http://api.exchangeratesapi.io/v1/latest"
 EXCHANGE_SYMBOLS = ["USD", "SAR", "GBP", "CHF"]
@@ -114,9 +117,7 @@ def rebase_to_usd(data):
 
 def fetch_exchange_rates(**kwargs):
     params = {
-        "access_key": SECRETS[
-            "EXCHANGE_RATES_API"
-        ],
+        "access_key": get_secrets()["EXCHANGE_RATES_API"],
         "symbols": ",".join(EXCHANGE_SYMBOLS)
     }
 
@@ -134,8 +135,7 @@ def fetch_exchange_rates(**kwargs):
 def fetch_metal_prices(**kwargs):
     metals = {"XAU": "Gold", "XAG": "Silver", "XPT": "Platinum", "XPD": "Palladium"}
     params = {
-        "api_key": SECRETS[
-        "METAL_PRICE_API"],
+        "api_key": get_secrets()["METAL_PRICE_API"],
         "base": "USD",
         "currencies": ",".join(metals.keys())
     }
@@ -157,7 +157,7 @@ def fetch_daily_equity_prices(**kwargs):
             "function": "TIME_SERIES_DAILY",
             "symbol": symbol,
             "outputsize": "compact",
-            "apikey": SECRETS["ALPHA_VANTAGE_API"],
+            "apikey": get_secrets()["ALPHA_VANTAGE_API"],
         }
 
         response = requests.get(BASE_URL, params=params)

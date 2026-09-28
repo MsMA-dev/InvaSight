@@ -16,3 +16,6 @@ dbt/**/.user.yml
 
 # SSH keys
 *.pem
+
+# compose env written by the deploy step
+doockerImageForDags/.env

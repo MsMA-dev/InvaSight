@@ -3,7 +3,9 @@ services:
     build:
       context: .
       dockerfile: dockerfile
-    image: test:latest
+    # CI/CD writes AIRFLOW_IMAGE to .env on the EC2 so it pulls the published
+    # image; locally it falls back to building test:latest from the dockerfile
+    image: ${AIRFLOW_IMAGE:-test:latest}
 
     volumes:
       - ./airflow:/opt/airflow
