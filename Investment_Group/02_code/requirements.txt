@@ -7,3 +7,7 @@ apache-airflow-providers-common-sql==2.1.1
 apache-airflow-providers-standard==1.19.0
 boto3==1.43.75
 requests==2.34.2
+
+# dbt transformations (install in a separate virtualenv: its dependencies clash with Airflow's)
+dbt-core==1.12.4
+dbt-snowflake==1.12.0
