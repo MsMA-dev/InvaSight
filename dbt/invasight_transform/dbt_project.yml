@@ -20,6 +20,8 @@ models:
     staging:
       +materialized: view
       +schema: STAGING
+    intermediate:
+      +materialized: ephemeral
     analytics:
       +materialized: table
       +schema: ANALYTICS
