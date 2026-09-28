@@ -1,0 +1,46 @@
+relationship fb9b72a3-7c24-4ec7-9fbf-22dbd357038f
+	fromColumn: FACT_DAILY_PORTFOLIO_SUMMARY.DATE_KEY
+	toColumn: DIM_DATE.DATE_KEY
+
+relationship 9aa18de4-9278-46cb-8ced-455df9a30085
+	fromColumn: FACT_DAILY_PORTFOLIO_SUMMARY.CLIENT_KEY
+	toColumn: DIM_CLIENT.CLIENT_KEY
+
+relationship d469b401-fcca-466b-b89b-91430b20d52e
+	fromColumn: FACT_HOLDINGS.DATE_KEY
+	toColumn: DIM_DATE.DATE_KEY
+
+relationship 46f25c17-b2c9-47d2-a079-0d29fb85dcfc
+	fromColumn: FACT_HOLDINGS.CLIENT_KEY
+	toColumn: DIM_CLIENT.CLIENT_KEY
+
+relationship bb7f0388-ef74-4b60-b3a9-ac422dc1ca99
+	fromColumn: FACT_HOLDINGS.ASSET_KEY
+	toColumn: DIM_ASSET.ASSET_KEY
+
+relationship 15e94227-21b0-4e1c-8428-8087a6fd64be
+	fromColumn: FACT_HOLDINGS.CURRENCY_KEY
+	toColumn: DIM_CURRENCY.CURRENCY_KEY
+
+relationship b78d7b4e-b213-4b47-9e94-130ef3bcb177
+	fromColumn: FACT_MARKET_PRICES.DATE_KEY
+	toColumn: DIM_DATE.DATE_KEY
+
+relationship aa4c79ee-aeea-41c3-b5e9-3654fa6d026f
+	fromColumn: FACT_MARKET_PRICES.ASSET_KEY
+	toColumn: DIM_ASSET.ASSET_KEY
+
+relationship 24c3c3dd-7c4f-4a95-b39b-b08a5134f2a5
+	fromColumn: FACT_MARKET_PRICES.CURRENCY_KEY
+	toColumn: DIM_CURRENCY.CURRENCY_KEY
+
+relationship 14d8071c-592a-4fe4-9da0-0873dffe99f4
+	fromColumn: FACT_MARKET_PRICES.SOURCE_KEY
+	toColumn: DIM_SOURCE.SOURCE_KEY
+
+relationship efb0575a-2170-f3f2-e8f1-2900e156c18a
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: NAME_REF.CLIENT_ID
+	toColumn: DIM_CLIENT.CLIENT_ID
+

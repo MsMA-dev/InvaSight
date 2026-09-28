@@ -1,0 +1,62 @@
+table DIM_ASSET
+	lineageTag: 8dfe96b4-6105-4daf-a259-9b2b437da7f9
+
+	column ASSET_KEY
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(32)
+		lineageTag: 88dad93d-68a9-4e64-8bc5-52417ce77046
+		summarizeBy: none
+		sourceColumn: ASSET_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+	column TICKER
+		dataType: string
+		sourceProviderType: nvarchar(255)
+		lineageTag: 0828785e-5efd-4794-8fe6-b0c613fd4781
+		summarizeBy: none
+		sourceColumn: TICKER
+
+		annotation SummarizationSetBy = Automatic
+
+	column ASSET_TYPE
+		dataType: string
+		sourceProviderType: nvarchar(255)
+		lineageTag: 131062d2-9264-49de-91b2-36b86b0d1c53
+		summarizeBy: none
+		sourceColumn: ASSET_TYPE
+
+		annotation SummarizationSetBy = Automatic
+
+	column ASSET_NAME
+		dataType: string
+		sourceProviderType: nvarchar(16777216)
+		lineageTag: 3d3f244d-9d24-4690-b6d0-d93d000e0aa8
+		summarizeBy: none
+		sourceColumn: ASSET_NAME
+
+		annotation SummarizationSetBy = Automatic
+
+	column SECTOR
+		dataType: string
+		sourceProviderType: nvarchar(18)
+		lineageTag: 5ff687a5-ffec-4d0a-ad03-80ea608db8d7
+		summarizeBy: none
+		sourceColumn: SECTOR
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DIM_ASSET = m
+		mode: directQuery
+		source =
+				let
+				    Source = Snowflake.Databases("ltzxtcl-ax57527.snowflakecomputing.com","INVASIGHT_WH",[Implementation="2.0"]),
+				    INVASIGHT_Database = Source{[Name="INVASIGHT",Kind="Database"]}[Data],
+				    ANALYTICS_Schema = INVASIGHT_Database{[Name="ANALYTICS",Kind="Schema"]}[Data],
+				    DIM_ASSET_Table = ANALYTICS_Schema{[Name="DIM_ASSET",Kind="Table"]}[Data]
+				in
+				    DIM_ASSET_Table
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,35 @@
+table DIM_CURRENCY
+	lineageTag: cb90c01a-16bc-4a84-b4fb-8c50c8326c33
+
+	column CURRENCY_KEY
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(32)
+		lineageTag: 834fec1e-81c7-4801-a6a7-f8af07331729
+		summarizeBy: none
+		sourceColumn: CURRENCY_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+	column CURRENCY_CODE
+		dataType: string
+		sourceProviderType: nvarchar(255)
+		lineageTag: f009bd10-05d5-44e2-8dcb-3b6d706f3f57
+		summarizeBy: none
+		sourceColumn: CURRENCY_CODE
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DIM_CURRENCY = m
+		mode: directQuery
+		source =
+				let
+				    Source = Snowflake.Databases("ltzxtcl-ax57527.snowflakecomputing.com","INVASIGHT_WH",[Implementation="2.0"]),
+				    INVASIGHT_Database = Source{[Name="INVASIGHT",Kind="Database"]}[Data],
+				    ANALYTICS_Schema = INVASIGHT_Database{[Name="ANALYTICS",Kind="Schema"]}[Data],
+				    DIM_CURRENCY_Table = ANALYTICS_Schema{[Name="DIM_CURRENCY",Kind="Table"]}[Data]
+				in
+				    DIM_CURRENCY_Table
+
+	annotation PBI_ResultType = Table
+

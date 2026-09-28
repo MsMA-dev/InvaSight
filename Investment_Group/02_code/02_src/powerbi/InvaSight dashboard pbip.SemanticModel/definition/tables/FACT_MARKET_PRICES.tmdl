@@ -1,0 +1,166 @@
+table FACT_MARKET_PRICES
+	lineageTag: 59aca29a-3ec8-4e00-ad00-b8fde0b0f069
+
+	measure 'Avg Price (SAR)' = AVERAGE ( FACT_MARKET_PRICES[PRICE_SAR] )
+		formatString: #,0.00
+		displayFolder: Market
+		lineageTag: 7e0ccf4e-4676-4baf-8975-ceddd3809f05
+
+	measure 'Latest Price (SAR)' =
+			VAR MaxDate = CALCULATE ( MAX ( DIM_DATE[FULL_DATE] ), FACT_MARKET_PRICES )
+			RETURN
+			    CALCULATE ( AVERAGE ( FACT_MARKET_PRICES[PRICE_SAR] ), DIM_DATE[FULL_DATE] = MaxDate )
+		formatString: #,0.00
+		displayFolder: Market
+		lineageTag: fcc0c317-dd68-4909-9f5e-24c394141f9a
+
+	measure 'Price Change %' =
+			VAR PricedRows = FILTER ( FACT_MARKET_PRICES, NOT ISBLANK ( FACT_MARKET_PRICES[PRICE_SAR] ) )
+			VAR MinDate = MINX ( PricedRows, RELATED ( DIM_DATE[FULL_DATE] ) )
+			VAR MaxDate = MAXX ( PricedRows, RELATED ( DIM_DATE[FULL_DATE] ) )
+			VAR FirstPrice = CALCULATE ( AVERAGE ( FACT_MARKET_PRICES[PRICE_SAR] ), DIM_DATE[FULL_DATE] = MinDate )
+			VAR LastPrice = CALCULATE ( AVERAGE ( FACT_MARKET_PRICES[PRICE_SAR] ), DIM_DATE[FULL_DATE] = MaxDate )
+			RETURN
+			    DIVIDE ( LastPrice - FirstPrice, FirstPrice )
+		formatString: 0.00%
+		displayFolder: Market
+		lineageTag: e22f906c-29cc-4739-9647-a4ac95e28961
+
+	measure 'CF Price Change Color' =
+			VAR v = [Price Change %]
+			RETURN
+			    SWITCH ( TRUE (), ISBLANK ( v ), BLANK (), v < 0, "#A4262C", "#2b6136" )
+		displayFolder: Formatting
+		lineageTag: 3e0aa913-5d15-4034-857e-0a475ebab726
+
+	measure 'Price Index (Start = 100)' =
+			VAR StartDate =
+			    CALCULATE (
+			        MINX (
+			            FILTER ( FACT_MARKET_PRICES, NOT ISBLANK ( FACT_MARKET_PRICES[PRICE_SAR] ) ),
+			            RELATED ( DIM_DATE[FULL_DATE] )
+			        ),
+			        ALLSELECTED ( DIM_DATE )
+			    )
+			VAR StartPrice = CALCULATE ( [Avg Price (SAR)], ALLSELECTED ( DIM_DATE ), DIM_DATE[FULL_DATE] = StartDate )
+			RETURN
+			    DIVIDE ( [Avg Price (SAR)], StartPrice ) * 100
+		formatString: #,0.0
+		displayFolder: Market
+		lineageTag: a5a2f824-19bf-4676-95c5-34af90d3eee1
+
+	column MARKET_PRICE_KEY
+		dataType: string
+		sourceProviderType: nvarchar(32)
+		lineageTag: 3586e7ea-0467-488f-a5ab-3fa8164538f1
+		summarizeBy: none
+		sourceColumn: MARKET_PRICE_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+	column DATE_KEY
+		dataType: double
+		sourceProviderType: decimal(38, 0)
+		lineageTag: 5ef63670-d685-42aa-9130-051ee8da4c4e
+		summarizeBy: none
+		sourceColumn: DATE_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ASSET_KEY
+		dataType: string
+		sourceProviderType: nvarchar(32)
+		lineageTag: c33ff367-34e3-4232-8187-6b932c9de394
+		summarizeBy: none
+		sourceColumn: ASSET_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+	column CURRENCY_KEY
+		dataType: string
+		sourceProviderType: nvarchar(32)
+		lineageTag: 2f6d8097-ccee-4c00-8300-4b5821f8e977
+		summarizeBy: none
+		sourceColumn: CURRENCY_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+	column SOURCE_KEY
+		dataType: string
+		sourceProviderType: nvarchar(32)
+		lineageTag: a18caa11-9f22-49b2-930c-d584ab881acc
+		summarizeBy: none
+		sourceColumn: SOURCE_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+	column EXCHANGE_RATE
+		dataType: double
+		sourceProviderType: decimal(38, 6)
+		lineageTag: e4533a32-98a4-4ac5-9207-d50b97015edb
+		summarizeBy: sum
+		sourceColumn: EXCHANGE_RATE
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PRICE_SAR
+		dataType: double
+		sourceProviderType: decimal(38, 4)
+		lineageTag: 9ae95e4d-2559-476d-a78c-95554e279056
+		summarizeBy: sum
+		sourceColumn: PRICE_SAR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PRICE
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 6165566c-aff1-4301-bd7f-ccb0d81c520c
+		summarizeBy: sum
+		sourceColumn: PRICE
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LOADED_AT
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 98816539-bb2d-4edd-b94e-d0f300ffc5e0
+		summarizeBy: none
+		sourceColumn: LOADED_AT
+
+		annotation SummarizationSetBy = Automatic
+
+	column FX_RATE_DATE
+		dataType: dateTime
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: 2b2e6190-85d0-4933-9f41-a525a6319043
+		summarizeBy: none
+		sourceColumn: FX_RATE_DATE
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition FACT_MARKET_PRICES = m
+		mode: directQuery
+		source =
+				let
+				    Source = Snowflake.Databases("ltzxtcl-ax57527.snowflakecomputing.com","INVASIGHT_WH",[Implementation="2.0"]),
+				    INVASIGHT_Database = Source{[Name="INVASIGHT",Kind="Database"]}[Data],
+				    ANALYTICS_Schema = INVASIGHT_Database{[Name="ANALYTICS",Kind="Schema"]}[Data],
+				    FACT_MARKET_PRICES_Table = ANALYTICS_Schema{[Name="FACT_MARKET_PRICES",Kind="Table"]}[Data]
+				in
+				    FACT_MARKET_PRICES_Table
+
+	annotation PBI_ResultType = Table
+

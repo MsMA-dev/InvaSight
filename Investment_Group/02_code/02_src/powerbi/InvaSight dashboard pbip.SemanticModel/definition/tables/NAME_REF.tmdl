@@ -1,0 +1,32 @@
+table NAME_REF
+	lineageTag: 9bba03fb-8ffd-4231-b40b-82649a936870
+
+	column CLIENT_ID
+		dataType: string
+		sourceProviderType: nvarchar(16777216)
+		lineageTag: b090dc05-f8ae-4674-b004-415b210ad38e
+		summarizeBy: none
+		sourceColumn: CLIENT_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CLIENT_NAME
+		dataType: string
+		sourceProviderType: nvarchar(16777216)
+		lineageTag: cdb77895-37fd-4395-9535-017a2cd9d0b0
+		summarizeBy: none
+		sourceColumn: CLIENT_NAME
+
+		annotation SummarizationSetBy = Automatic
+
+	partition NAME_REF = m
+		mode: directQuery
+		source =
+				let
+				    Source = Snowflake.Databases("ltzxtcl-ax57527.snowflakecomputing.com","INVASIGHT_WH",[Implementation="2.0"]),
+				    INVASIGHT_Database = Source{[Name="INVASIGHT",Kind="Database"]}[Data],
+				    ANALYTICS_Schema = INVASIGHT_Database{[Name="ANALYTICS",Kind="Schema"]}[Data],
+				    NAME_REF_View = ANALYTICS_Schema{[Name="NAME_REF",Kind="View"]}[Data]
+				in
+				    NAME_REF_View
+

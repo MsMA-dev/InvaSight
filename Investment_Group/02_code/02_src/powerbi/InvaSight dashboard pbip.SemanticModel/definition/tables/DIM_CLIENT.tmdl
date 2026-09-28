@@ -1,0 +1,44 @@
+table DIM_CLIENT
+	lineageTag: c6af8837-3b72-42c3-a678-069185f2ad9a
+
+	column CLIENT_KEY
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(32)
+		lineageTag: fbd6aa34-e545-4798-ba97-5697f156ab17
+		summarizeBy: none
+		sourceColumn: CLIENT_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+	column CLIENT_ID
+		dataType: string
+		sourceProviderType: nvarchar(255)
+		lineageTag: da67112d-e7dc-450e-b6b2-5cead7cc1f9b
+		summarizeBy: none
+		sourceColumn: CLIENT_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CLIENT_NAME
+		dataType: string
+		sourceProviderType: nvarchar(16777216)
+		lineageTag: 63136d7d-caa0-4393-ab69-ba575edd7104
+		summarizeBy: none
+		sourceColumn: CLIENT_NAME
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DIM_CLIENT = m
+		mode: directQuery
+		source =
+				let
+				    Source = Snowflake.Databases("ltzxtcl-ax57527.snowflakecomputing.com","INVASIGHT_WH",[Implementation="2.0"]),
+				    INVASIGHT_Database = Source{[Name="INVASIGHT",Kind="Database"]}[Data],
+				    ANALYTICS_Schema = INVASIGHT_Database{[Name="ANALYTICS",Kind="Schema"]}[Data],
+				    DIM_CLIENT_Table = ANALYTICS_Schema{[Name="DIM_CLIENT",Kind="Table"]}[Data]
+				in
+				    DIM_CLIENT_Table
+
+	annotation PBI_ResultType = Table
+

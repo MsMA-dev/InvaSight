@@ -1,0 +1,26 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["DIM_ASSET","DIM_CLIENT","DIM_CURRENCY","DIM_DATE","DIM_SOURCE","FACT_DAILY_PORTFOLIO_SUMMARY","FACT_HOLDINGS","FACT_MARKET_PRICES","NAME_REF"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table DIM_ASSET
+ref table DIM_CLIENT
+ref table DIM_CURRENCY
+ref table DIM_DATE
+ref table DIM_SOURCE
+ref table FACT_DAILY_PORTFOLIO_SUMMARY
+ref table FACT_HOLDINGS
+ref table FACT_MARKET_PRICES
+ref table NAME_REF
+
+ref cultureInfo en-US
+

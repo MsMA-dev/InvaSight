@@ -1,0 +1,72 @@
+table DIM_DATE
+	lineageTag: 150ec911-da22-419d-9712-7b9c8ed276bf
+
+	column DATE_KEY
+		dataType: double
+		sourceProviderType: decimal(38, 0)
+		lineageTag: ad0242c2-6d64-43fd-82fe-0a126f027573
+		summarizeBy: none
+		sourceColumn: DATE_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column FULL_DATE
+		dataType: dateTime
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: 30870531-16e3-4de3-a264-37db5a3f1487
+		summarizeBy: none
+		sourceColumn: FULL_DATE
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DAY
+		dataType: double
+		sourceProviderType: decimal(38, 0)
+		lineageTag: 755ca120-b3c6-4e83-86fb-6ba0f4f3820c
+		summarizeBy: sum
+		sourceColumn: DAY
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MONTH
+		dataType: double
+		sourceProviderType: decimal(38, 0)
+		lineageTag: 9105b82a-a970-4a2c-9330-71a4332b6348
+		summarizeBy: sum
+		sourceColumn: MONTH
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column YEAR
+		dataType: double
+		sourceProviderType: decimal(38, 0)
+		lineageTag: aa240edc-ad95-428d-b003-fd4185d32127
+		summarizeBy: sum
+		sourceColumn: YEAR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition DIM_DATE = m
+		mode: directQuery
+		source =
+				let
+				    Source = Snowflake.Databases("ltzxtcl-ax57527.snowflakecomputing.com","INVASIGHT_WH",[Implementation="2.0"]),
+				    INVASIGHT_Database = Source{[Name="INVASIGHT",Kind="Database"]}[Data],
+				    ANALYTICS_Schema = INVASIGHT_Database{[Name="ANALYTICS",Kind="Schema"]}[Data],
+				    DIM_DATE_Table = ANALYTICS_Schema{[Name="DIM_DATE",Kind="Table"]}[Data]
+				in
+				    DIM_DATE_Table
+
+	annotation PBI_ResultType = Table
+

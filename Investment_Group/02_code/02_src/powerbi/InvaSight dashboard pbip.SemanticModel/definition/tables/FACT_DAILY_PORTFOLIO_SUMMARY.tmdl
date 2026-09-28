@@ -1,0 +1,180 @@
+table FACT_DAILY_PORTFOLIO_SUMMARY
+	lineageTag: 56e2f801-eb5f-405e-9b55-00ab242ca3c6
+
+	measure 'Portfolio Value (SAR)' =
+			VAR MaxDate = CALCULATE ( MAX ( DIM_DATE[FULL_DATE] ), FACT_DAILY_PORTFOLIO_SUMMARY )
+			RETURN
+			    CALCULATE ( SUM ( FACT_DAILY_PORTFOLIO_SUMMARY[PORTFOLIO_VALUE_SAR] ), DIM_DATE[FULL_DATE] = MaxDate )
+		formatString: #,0
+		displayFolder: Portfolio
+		lineageTag: 7c28a48e-6717-4f19-b15d-194940dd30d5
+
+	measure 'Total Investment (SAR)' =
+			VAR MaxDate = CALCULATE ( MAX ( DIM_DATE[FULL_DATE] ), FACT_DAILY_PORTFOLIO_SUMMARY )
+			RETURN
+			    CALCULATE ( SUM ( FACT_DAILY_PORTFOLIO_SUMMARY[TOTAL_INVESTMENT] ), DIM_DATE[FULL_DATE] = MaxDate )
+		formatString: #,0
+		displayFolder: Portfolio
+		lineageTag: 2f2231cc-5d9d-45ed-9388-a3fd2d2337b8
+
+	measure 'P&L (SAR)' = [Portfolio Value (SAR)] - [Total Investment (SAR)]
+		formatString: #,0
+		displayFolder: Portfolio
+		lineageTag: 57d196ac-4d7a-4379-b70b-957dce052d75
+
+	measure 'Return %' = DIVIDE ( [P&L (SAR)], [Total Investment (SAR)] )
+		formatString: 0.00%
+		displayFolder: Portfolio
+		lineageTag: 1c329b5c-2a47-4278-8ef5-fd4fca6d7cb7
+
+	measure 'Avg Daily Return %' = AVERAGE ( FACT_DAILY_PORTFOLIO_SUMMARY[DAILY_RETURN] )
+		formatString: 0.00"%"
+		displayFolder: Portfolio
+		lineageTag: b23bda02-902d-47d2-9a9d-588a7a7d4a2d
+
+	measure 'Currency Exposure (SAR)' =
+			VAR MaxDate = CALCULATE ( MAX ( DIM_DATE[FULL_DATE] ), FACT_DAILY_PORTFOLIO_SUMMARY )
+			RETURN
+			    CALCULATE ( SUM ( FACT_DAILY_PORTFOLIO_SUMMARY[CURRENCY_EXPOSURE_SAR] ), DIM_DATE[FULL_DATE] = MaxDate )
+		formatString: #,0
+		displayFolder: Portfolio
+		lineageTag: 079609a4-1166-4d51-8c58-70b8ca551c30
+
+	measure 'CF P&L Color' =
+			VAR v = [P&L (SAR)]
+			RETURN
+			    SWITCH ( TRUE (), ISBLANK ( v ), BLANK (), v < 0, "#A4262C", "#2b6136" )
+		displayFolder: Formatting
+		lineageTag: 234894d8-af04-4365-8de7-dfb9340eeaeb
+
+	measure 'CF Return Color' =
+			VAR v = [Return %]
+			RETURN
+			    SWITCH ( TRUE (), ISBLANK ( v ), BLANK (), v < 0, "#A4262C", "#2b6136" )
+		displayFolder: Formatting
+		lineageTag: 1b07674e-28e9-4321-a9de-14b666a946f1
+
+	measure 'CF Avg Daily Return Color' =
+			VAR v = [Avg Daily Return %]
+			RETURN
+			    SWITCH ( TRUE (), ISBLANK ( v ), BLANK (), v < 0, "#A4262C", "#2b6136" )
+		displayFolder: Formatting
+		lineageTag: 3847783c-3457-4b09-8ba1-cc904b7d0b7f
+
+	measure 'CF Portfolio Value Color' =
+			VAR v = [Portfolio Value (SAR)]
+			RETURN
+			    SWITCH ( TRUE (), ISBLANK ( v ), BLANK (), v < 0, "#A4262C", "#2b6136" )
+		displayFolder: Formatting
+		lineageTag: 68a73e17-020f-4187-b841-2a4d61d5bf86
+
+	column PORTFOLIO_SUMMARY_KEY
+		dataType: double
+		sourceProviderType: decimal(19, 0)
+		lineageTag: 37377834-e96c-4491-9a5e-81969b6e059e
+		summarizeBy: sum
+		sourceColumn: PORTFOLIO_SUMMARY_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DATE_KEY
+		dataType: double
+		sourceProviderType: decimal(38, 0)
+		lineageTag: 6fdca3e7-b9cc-4877-9d5f-05292c66ac02
+		summarizeBy: none
+		sourceColumn: DATE_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CLIENT_KEY
+		dataType: string
+		sourceProviderType: nvarchar(32)
+		lineageTag: 6bd6c88a-abc1-4bab-9acf-dead1d5b199e
+		summarizeBy: none
+		sourceColumn: CLIENT_KEY
+
+		annotation SummarizationSetBy = Automatic
+
+	column PORTFOLIO_VALUE_SAR
+		dataType: double
+		sourceProviderType: decimal(38, 2)
+		lineageTag: b22ddb12-4453-43d6-9e54-8437244888c0
+		summarizeBy: sum
+		sourceColumn: PORTFOLIO_VALUE_SAR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TOTAL_FEES
+		dataType: double
+		sourceProviderType: decimal(38, 2)
+		lineageTag: 4254dd69-5a02-488d-8c49-ff124fc31cb5
+		summarizeBy: sum
+		sourceColumn: TOTAL_FEES
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TOTAL_INVESTMENT
+		dataType: double
+		sourceProviderType: decimal(38, 4)
+		lineageTag: d1fb017b-4aa2-461c-97e6-9ff97dc45f7a
+		summarizeBy: sum
+		sourceColumn: TOTAL_INVESTMENT
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DAILY_RETURN
+		dataType: double
+		sourceProviderType: decimal(38, 6)
+		lineageTag: 753092d5-5127-431c-9677-8359dc718137
+		summarizeBy: sum
+		sourceColumn: DAILY_RETURN
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PNL_SAR
+		dataType: double
+		sourceProviderType: decimal(38, 4)
+		lineageTag: 9c73db03-8ec8-4484-a0bd-b124c1b378d6
+		summarizeBy: sum
+		sourceColumn: PNL_SAR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CURRENCY_EXPOSURE_SAR
+		dataType: double
+		sourceProviderType: decimal(38, 4)
+		lineageTag: 29175794-1a42-4f63-8820-66d562ac7e89
+		summarizeBy: sum
+		sourceColumn: CURRENCY_EXPOSURE_SAR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition FACT_DAILY_PORTFOLIO_SUMMARY = m
+		mode: directQuery
+		source =
+				let
+				    Source = Snowflake.Databases("ltzxtcl-ax57527.snowflakecomputing.com","INVASIGHT_WH",[Implementation="2.0"]),
+				    INVASIGHT_Database = Source{[Name="INVASIGHT",Kind="Database"]}[Data],
+				    ANALYTICS_Schema = INVASIGHT_Database{[Name="ANALYTICS",Kind="Schema"]}[Data],
+				    FACT_DAILY_PORTFOLIO_SUMMARY_Table = ANALYTICS_Schema{[Name="FACT_DAILY_PORTFOLIO_SUMMARY",Kind="Table"]}[Data]
+				in
+				    FACT_DAILY_PORTFOLIO_SUMMARY_Table
+
+	annotation PBI_ResultType = Table
+

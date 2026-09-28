@@ -1,0 +1,242 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "dim_asset.ticker": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DIM_ASSET",
+			          "ConceptualProperty": "TICKER"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ticker": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_asset.asset_type": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DIM_ASSET",
+			          "ConceptualProperty": "ASSET_TYPE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Type": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_holdings.buy_value_sar": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FACT_HOLDINGS",
+			          "ConceptualProperty": "Buy Value (SAR)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Bought": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_holdings.sell_value_sar": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FACT_HOLDINGS",
+			          "ConceptualProperty": "Sell Value (SAR)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Sold": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_holdings.net_invested_sar": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FACT_HOLDINGS",
+			          "ConceptualProperty": "Net Invested (SAR)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Net": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_holdings.transactions": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FACT_HOLDINGS",
+			          "ConceptualProperty": "Transactions"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Trades": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_holdings.transaction_fees": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FACT_HOLDINGS",
+			          "ConceptualProperty": "Transaction Fees"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Fees": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_market_prices.latest_price_sar": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FACT_MARKET_PRICES",
+			          "ConceptualProperty": "Latest Price (SAR)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Latest price": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_market_prices.price_change_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "FACT_MARKET_PRICES",
+			          "ConceptualProperty": "Price Change %"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Change %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_asset.asset_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DIM_ASSET",
+			          "ConceptualProperty": "ASSET_NAME"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Asset": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_asset.sector": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DIM_ASSET",
+			          "ConceptualProperty": "SECTOR"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Sector": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

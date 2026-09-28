@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "InvaSight dashboard pbip"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5befc699-e15a-47d1-9b40-7c3064c6e010"
+  }
+}
