@@ -16,7 +16,6 @@ places, so they are only in `02_src/dbt/`.
 - **Recovered from Snowflake's query history:** Fayha'a Alharbi
 
 ## Why "recovered"
-The latest versions ran on the dbt server but were never pushed to Git. When the
-server had to be shut down, they were rebuilt from the SQL that dbt had executed,
+When the server had to be shut down, they were rebuilt from the SQL that dbt had executed,
 which Snowflake keeps in `INFORMATION_SCHEMA.QUERY_HISTORY`. With these files in the
 dbt project, `dbt build` passes all 61 tests.
