@@ -13,5 +13,6 @@ RUN pip install --no-cache-dir \
     apache-airflow==3.3.2 \
     apache-airflow-providers-microsoft-azure \
     apache-airflow-providers-ssh \
-    apache-airflow-providers-snowflake
+    apache-airflow-providers-snowflake \
+    boto3
 
