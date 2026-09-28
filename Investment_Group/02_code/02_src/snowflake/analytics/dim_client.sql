@@ -1,8 +1,0 @@
-{{ config(materialized='table') }}
-
-SELECT
-    MD5(r.CLIENT_ID) AS CLIENT_KEY,
-    r.CLIENT_ID,
-    r.CLIENT_NAME
-FROM INVASIGHT.ANALYTICS.NAME_REF r
-WHERE r.CLIENT_ID IS NOT NULL
