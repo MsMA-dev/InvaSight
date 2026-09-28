@@ -1,0 +1,142 @@
+version: 2
+
+sources:
+  - name: raw
+    database: INVASIGHT
+    schema: RAW
+
+    tables:
+      - name: metal_prices_raw
+        identifier: METAL_PRICES_RAW
+        description: Raw precious metals API responses loaded from Azure ADLS into Snowflake.
+
+      - name: equity_prices_raw
+        identifier: EQUITY_PRICES_RAW
+        description: Raw equity price API responses (Alpha Vantage) loaded from Azure ADLS into Snowflake.
+
+      - name: fx_rates_raw
+        identifier: FX_RATES_RAW
+        description: Raw exchange rates API responses loaded into Snowflake.
+
+      - name: ledger_transactions_raw
+        identifier: LEDGER_TRANSACTIONS_RAW
+        description: Raw investment ledger transaction records loaded into Snowflake.
+
+models:
+  - name: stg_precious_metals
+    description: >
+      Cleaned and deduplicated precious metals data parsed from the RAW JSON source.
+
+    columns:
+      - name: success
+        description: Indicates whether the API request was successful.
+        tests:
+          - not_null
+
+      - name: base_currency
+        description: Base currency returned by the API.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['USD']
+
+      - name: api_timestamp
+        description: Timestamp returned by the source API.
+        tests:
+          - not_null
+          - unique
+
+      - name: gold_usd
+        description: Gold rate from the API.
+        tests:
+          - not_null
+
+      - name: silver_usd
+        description: Silver rate from the API.
+        tests:
+          - not_null
+
+      - name: platinum_usd
+        description: Platinum rate from the API.
+        tests:
+          - not_null
+
+      - name: palladium_usd
+        description: Palladium rate from the API.
+        tests:
+          - not_null
+
+      - name: file_name
+        description: Source file name in Azure ADLS.
+        tests:
+          - not_null
+
+      - name: loaded_at
+        description: Timestamp when the RAW record was loaded into Snowflake.
+        tests:
+          - not_null
+
+  - name: stg_equity_prices
+    description: >
+      Cleaned, flattened, and deduplicated daily equity OHLCV data parsed
+      from the raw Alpha Vantage JSON source.
+
+    columns:
+      - name: ticker
+        description: Equity ticker symbol.
+        tests:
+          - not_null
+
+      - name: date
+        description: Trading date for this price record.
+        tests:
+          - not_null
+
+      - name: open_price
+        description: Opening price for the trading day.
+        tests:
+          - not_null
+
+      - name: high_price
+        description: Highest price during the trading day.
+        tests:
+          - not_null
+
+      - name: low_price
+        description: Lowest price during the trading day.
+        tests:
+          - not_null
+
+      - name: close_price
+        description: Closing price for the trading day.
+        tests:
+          - not_null
+
+      - name: volume
+        description: Trading volume for the day.
+        tests:
+          - not_null
+
+      - name: file_name
+        description: Source file name in Azure ADLS.
+        tests:
+          - not_null
+
+      - name: loaded_at
+        description: Timestamp when the RAW record was loaded into Snowflake.
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker, date]
+
+  - name: stg_exchange_rates
+    description: >
+      Parsed and deduplicated foreign exchange rates.
+
+  - name: stg_ledger_transactions
+    description: >
+      Parsed and cleaned raw ledger transactions.
