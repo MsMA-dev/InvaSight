@@ -11,7 +11,7 @@ USE SCHEMA RAW;
    ------------------------------------------------------------ */
 
 CREATE STAGE INVASIGHT.RAW.INVASIGHT_AZURE_SAS_STAGE
-    URL = 'azure://invasighttarget2026.blob.core.windows.net/invasight-data/'
+    URL = 'azure://<storage_account>.blob.core.windows.net/<container>/'
     CREDENTIALS = (
         AZURE_SAS_TOKEN = '<AZURE_SAS_TOKEN>'
     );
