@@ -6,8 +6,9 @@ tables the Power BI dashboard reads. They are newer than the copies in
 dashboard uses (`TOTAL_INVESTMENT`, `DAILY_RETURN`, `PNL_SAR`, `CURRENCY_EXPOSURE_SAR`,
 `SECTOR`, `ASSET_NAME`, `SIGNED_QUANTITY`, `FX_RATE_DATE`).
 
-`dim_client`, `dim_currency`, `dim_date` and `dim_source` are identical in both
-places, so they are only in `02_src/dbt/`.
+This folder holds the complete analytics layer (5 dimensions + 3 facts). `dim_client`,
+`dim_currency`, `dim_date` and `dim_source` are the same as in `02_src/dbt/`; `dim_asset`
+and the three fact models are the newer deployed versions.
 
 ## Credits
 - **Analytics models:** Rawan Alaklabi
