@@ -8,6 +8,8 @@ landed in Azure, loaded into Snowflake, transformed by dbt into a galaxy schema,
 <img width="1159" height="559" alt="image" src="https://github.com/user-attachments/assets/b2db3173-29e0-4674-8747-0bd2bf039bee" />
 
 
+
+
 | Layer | What | Numbers |
 |---|---|---|
 | 1. Sources | Synthetic ledger + 3 APIs | 8 stock tickers · 4 metals · 4 currencies |
