@@ -5,15 +5,8 @@ landed in Azure, loaded into Snowflake, transformed by dbt into a galaxy schema,
 
 ## Architecture
 
-```
- [1] Sources            [2] Airflow (Docker on EC2)      [3] Azure Blob        [4] Snowflake RAW
- Ledger generator  ─┐   generate / fetch                  invasight-data/       FX_RATES_RAW
- exchangeratesapi  ─┼─► validate ──────────────────────►  <source>/<date>  ──►  METAL_PRICES_RAW
- metalpriceapi     ─┤                                     (landing zone)        EQUITY_PRICES_RAW
- Alpha Vantage     ─┘                                          COPY INTO ▲      LEDGER_TRANSACTIONS_RAW
-                                                                                      │ dbt (EC2, via SSH)
- [7] Power BI (DirectQuery) ◄── [6] ANALYTICS: galaxy schema ◄── [5] STAGING: 4 views ◄┘
-```
+<img width="1159" height="559" alt="image" src="https://github.com/user-attachments/assets/b2db3173-29e0-4674-8747-0bd2bf039bee" />
+
 
 | Layer | What | Numbers |
 |---|---|---|
