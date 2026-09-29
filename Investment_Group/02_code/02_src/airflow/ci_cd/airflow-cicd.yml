@@ -6,7 +6,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "doockerImageForDags/**"
+      - "Investment_Group/02_code/02_src/airflow/**"
       - ".github/workflows/airflow-cicd.yml"
   workflow_dispatch:
 
@@ -30,8 +30,8 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v6
         with:
-          context: doockerImageForDags
-          file: doockerImageForDags/dockerfile
+          context: Investment_Group/02_code/02_src/airflow
+          file: Investment_Group/02_code/02_src/airflow/dockerfile
           load: true
           tags: invasight-airflow:ci
           cache-from: type=gha
@@ -40,8 +40,8 @@ jobs:
       - name: Test - every DAG imports inside the image
         run: |
           docker run --rm \
-            -v "$PWD/doockerImageForDags/airflow/dags:/opt/airflow/dags" \
-            -v "$PWD/doockerImageForDags/tests:/tests" \
+            -v "$PWD/Investment_Group/02_code/02_src/airflow/airflow/dags:/opt/airflow/dags" \
+            -v "$PWD/Investment_Group/02_code/02_src/airflow/tests:/tests" \
             -e PYTHONPATH=/opt/airflow/dags \
             --entrypoint python \
             invasight-airflow:ci /tests/test_dag_integrity.py
@@ -74,7 +74,7 @@ jobs:
             set -e
             cd "${{ secrets.EC2_APP_DIR }}"
             git pull --ff-only origin main
-            cd doockerImageForDags
+            cd Investment_Group/02_code/02_src/airflow
             # docker-compose.yaml reads the image name from .env
             echo "AIRFLOW_IMAGE=${{ secrets.USERNAME_TEAM }}/invasight-airflow:latest" > .env
             docker compose pull

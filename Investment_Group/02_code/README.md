@@ -69,8 +69,9 @@ Taken from the repository's commit history.
   ```
 - **Dashboard:** open `02_src/powerbi/InvaSight dashboard pbip.pbip` in Power BI Desktop and sign
   in to Snowflake (DirectQuery, always live).
-- **CI/CD:** every push to `main` that changes the Airflow code builds the image, checks that every
-  DAG imports, pushes it to Docker Hub and deploys it to the EC2 (`02_src/airflow/ci_cd/`).
+- **CI/CD:** `02_src/airflow/ci_cd/airflow-cicd.yml` defines the pipeline: build the image → check
+  that every DAG imports → push to Docker Hub → deploy to the EC2 over SSH. It ran on the team
+  repository during development; to enable it, place it in `.github/workflows/` at the repository root.
 
 ## Orchestration, Ingestion & Dashboard
 
