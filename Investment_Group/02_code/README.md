@@ -20,14 +20,6 @@ landed in Azure, loaded into Snowflake, transformed by dbt into a galaxy schema,
 | 6. ANALYTICS | dbt tables, galaxy schema | 5 dimensions · 3 facts · 61 data tests |
 | 7. Dashboard | Power BI, DirectQuery | 3 pages · 26 measures · 36 visuals |
 
-## Team and contributions
-
-| Member | Contributions |
-|---|---|
-| **Fayha'a Alharbi** | Airflow orchestration: both DAGs, the synthetic ledger generator, API ingestion with validation, Azure landing zone, Snowflake `COPY INTO` loading and the dbt trigger · Docker image and Compose setup · CI/CD (GitHub Actions) with the DAG integrity test · Power BI dashboard · recovery of the deployed dbt models from Snowflake's query history · assembling this submission |
-| **Maryam Alotaibi** | dbt project configuration (`dbt_project.yml`, `packages.yml`, schema macro) · staging sources and tests · equity-price and exchange-rate staging models · FX-to-SAR conversion · moving the API keys to AWS Secrets Manager |
-| **Rawan Alaklabi** | Galaxy Schema analytics layer (5 dimensions shared by 3 facts) with tests and documentation · end-to-end Internal Ledger contribution · 50,000-record ledger preparation · Snowflake RAW & STAGING and staging transformations · data-quality tests · source-to-target and SAR valuation validation · portfolio valuation, P&L, daily returns and currency exposure · analytics fact and dimension models · submission structure and documentation |
-| **Hanoof Alassiri** | dbt installation and environment setup on the dedicated Worker01 EC2 server · Precious Metals dbt staging model for Gold, Silver, Platinum and Palladium · Azure ADLS-to-Snowflake external-stage setup and verification · dbt lineage graph documenting RAW → STAGING → ANALYTICS dependencies · Precious Metals sample data |
 
 ## How to run each part
 
@@ -81,3 +73,13 @@ In the pipeline, Airflow runs this step on the dbt EC2 (`/home/ubuntu/invasight_
 - Alpha Vantage free tier: 25 requests/day, 8 per market run.
 - Exchange-rate history starts 2026-09-07; older stock prices have no SAR value.
 - The ledger is synthetic: every ticker is priced at random 66-494 USD, so returns are illustrative.
+
+## Team and contributions
+
+| Member | Contributions |
+|---|---|
+| **Fayha'a Alharbi** | Airflow orchestration: both DAGs, the synthetic ledger generator, API ingestion with validation, Azure landing zone, Snowflake `COPY INTO` loading and the dbt trigger · Docker image and Compose setup · CI/CD (GitHub Actions) with the DAG integrity test · Power BI dashboard · recovery of the deployed dbt models from Snowflake's query history · assembling this submission |
+| **Maryam Alotaibi** | dbt project configuration (`dbt_project.yml`, `packages.yml`, schema macro) · staging sources and tests · equity-price and exchange-rate staging models · FX-to-SAR conversion · moving the API keys to AWS Secrets Manager |
+| **Rawan Alaklabi** | Galaxy Schema analytics layer (5 dimensions shared by 3 facts) with tests and documentation · end-to-end Internal Ledger contribution · 50,000-record ledger preparation · Snowflake RAW & STAGING and staging transformations · data-quality tests · source-to-target and SAR valuation validation · portfolio valuation, P&L, daily returns and currency exposure · analytics fact and dimension models · submission structure and documentation |
+| **Hanoof Alassiri** | dbt installation and environment setup on the dedicated Worker01 EC2 server · Precious Metals dbt staging model for Gold, Silver, Platinum and Palladium · Azure ADLS-to-Snowflake external-stage setup and verification · dbt lineage graph documenting RAW → STAGING → ANALYTICS dependencies · Precious Metals sample data |
+
