@@ -18,7 +18,7 @@ Taken from the repository's commit history.
 | **Fayha'a Alharbi** | Airflow orchestration: both DAGs, the synthetic ledger generator, API ingestion with validation, Azure landing zone, Snowflake `COPY INTO` loading and the dbt trigger · Docker image and Compose setup · CI/CD (GitHub Actions) with the DAG integrity test · Power BI dashboard · recovery of the deployed dbt models from Snowflake's query history · assembling this submission |
 | **Maryam Alotaibi** | dbt project configuration (`dbt_project.yml`, `packages.yml`, schema macro) · staging sources and tests · equity-price and exchange-rate staging models · FX-to-SAR conversion · moving the API keys to AWS Secrets Manager |
 | **Rawan Alaklabi** | Galaxy Schema analytics layer (5 dimensions shared by 3 facts) with tests and documentation · end-to-end Internal Ledger contribution · 50,000-record ledger preparation · Snowflake RAW & STAGING and staging transformations · data-quality tests · source-to-target and SAR valuation validation · portfolio valuation, P&L, daily returns and currency exposure · analytics fact and dimension models · submission structure and documentation |
-| **Hanoof Alassiri** | dbt project setup and environment-setup documentation · precious-metals staging model and tests · Snowflake Azure-stage setup SQL · precious-metals sample data |
+| **Hanoof Alassiri** | dbt installation and environment setup on the dedicated Worker01 EC2 server · Precious Metals dbt staging model for Gold, Silver, Platinum and Palladium · Azure ADLS-to-Snowflake external-stage setup and verification · dbt lineage graph documenting RAW → STAGING → ANALYTICS dependencies · Precious Metals sample data |
 
 ## Folder contents (`02_code/`)
 
