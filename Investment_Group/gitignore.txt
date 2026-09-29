@@ -1,0 +1,21 @@
+**/airflow/airflow.db
+**/airflow/airflow.db-shm
+**/airflow/airflow.db-wal
+**/airflow/airflow.cfg
+**/airflow/simple_auth_manager_passwords.json.generated
+**/airflow/logs/
+**/airflow/data/
+**/__pycache__/
+*.pyc
+
+# dbt generated files
+dbt/**/target/
+dbt/**/logs/
+dbt/**/dbt_packages/
+dbt/**/.user.yml
+
+# SSH keys
+*.pem
+
+# compose env written by the deploy step
+doockerImageForDags/.env
