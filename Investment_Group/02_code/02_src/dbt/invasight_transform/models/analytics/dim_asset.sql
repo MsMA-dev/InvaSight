@@ -1,5 +1,4 @@
-{{ config(materialized='table') }}
-
+-- Recovered from Snowflake query history: the version Worker01 built on 2026-09-28 (not pushed to GitHub)
 WITH equity_assets AS (
     SELECT DISTINCT ticker, 'EQUITY' AS asset_type, 1 AS priority
     FROM {{ ref('stg_equity_prices') }}
@@ -24,14 +23,34 @@ deduped AS (
     SELECT
         ticker,
         asset_type,
-        ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY priority) AS rn
+        ROW_NUMBER() OVER (
+            PARTITION BY ticker
+            ORDER BY priority
+        ) AS rn
     FROM combined_assets
     WHERE ticker IS NOT NULL
+),
+classified AS (
+    SELECT
+        ticker,
+        asset_type,
+        CASE
+            WHEN ticker IN ('XAU', 'XAG', 'XPT', 'XPD') THEN 'METALS'
+            WHEN ticker IN ('AAPL', 'MSFT', 'GOOGL', 'IBM', 'SAP') THEN 'TECHNOLOGY'
+            WHEN ticker = 'VOD' THEN 'TELECOMMUNICATIONS'
+            WHEN ticker = 'NESN.SW' THEN 'CONSUMER'
+            WHEN ticker = '2222.SR' THEN 'ENERGY'
+            WHEN ticker IN ('GLD', 'SPY') THEN 'ETF'
+            ELSE 'OTHER'
+        END AS sector
+    FROM deduped
+    WHERE rn = 1
 )
 
 SELECT
     MD5(ticker) AS asset_key,
     ticker,
-    asset_type
-FROM deduped
-WHERE rn = 1
+    ticker AS asset_name,
+    asset_type,
+    sector
+FROM classified

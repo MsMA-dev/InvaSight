@@ -1,0 +1,15 @@
+# Every credential comes from the environment (doockerImageForDags/.env,
+# passed in by docker-compose), so this file is safe to commit.
+invasight_pipeline:
+  target: prod
+  outputs:
+    prod:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'INVASIGHT_WH') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'INVASIGHT') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'STAGING') }}"
+      threads: 4
